@@ -2,6 +2,9 @@ namespace SpriteKind {
     export const LaserPointer = SpriteKind.create()
     export const shield = SpriteKind.create()
 }
+namespace StatusBarKind {
+    export const shieldCooldown = StatusBarKind.create()
+}
 controller.combos.attachCombo("" + controller.combos.idToString(controller.combos.ID.up) + controller.combos.idToString(controller.combos.ID.up) + controller.combos.idToString(controller.combos.ID.down) + controller.combos.idToString(controller.combos.ID.left) + controller.combos.idToString(controller.combos.ID.left) + controller.combos.idToString(controller.combos.ID.left) + controller.combos.idToString(controller.combos.ID.right), function () {
 	
 })
@@ -30,7 +33,7 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Projectile, function (sprite, ot
 function createDino () {
     statusbar = statusbars.create(20, 4, StatusBarKind.Health)
     statusbar2 = statusbars.create(4, 20, StatusBarKind.Magic)
-    statusbar2.setColor(9, 1)
+    statusbar2.setColor(7, 1)
     statusbar.attachToSprite(mySprite)
     statusbar.max = 10
     statusbar2.max = 300
@@ -69,18 +72,25 @@ sprites.onDestroyed(SpriteKind.Enemy, function (sprite) {
     info.changeScoreBy(1)
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
-    otherSprite.destroy()
-    statusbar.value += -1
-    mySprite.startEffect(effects.spray, 200)
+    if (shield_Up == 1) {
+        otherSprite.destroy(effects.starField, 50)
+        statusbar3.value += -1
+    } else {
+        otherSprite.destroy()
+        statusbar.value += -1
+        mySprite.startEffect(effects.spray, 200)
+    }
 })
-let mySprite4: Sprite = null
 let mySprite2: Sprite = null
 let projectile: Sprite = null
+let shield_Up = 0
 let Speed_boost = 0
 let statusbar: StatusBarSprite = null
 let statusbar2: StatusBarSprite = null
 let projectile2: Sprite = null
+let statusbar3: StatusBarSprite = null
 let mySprite: Sprite = null
+info.setScore(0)
 music.setVolume(134)
 music.knock.play()
 let Projectile_speed = 3000
@@ -211,9 +221,30 @@ scroller.scrollBackgroundWithSpeed(-50, 0)
 animation.runImageAnimation(
 mySprite,
 assets.animation`myAnim`,
-75,
+50,
 true
 )
+let mySprite5 = sprites.create(img`
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    `, SpriteKind.Player)
+mySprite5.setPosition(-10, -10)
+statusbar3 = statusbars.create(20, 4, StatusBarKind.shieldCooldown)
+statusbar3.attachToSprite(mySprite5)
 forever(function () {
     if (info.score() >= 100) {
         music.setVolume(255)
@@ -494,8 +525,6 @@ forever(function () {
         projectile2.y = mySprite2.y
         Projectile_speed += -100
         pause(Projectile_speed)
-    } else {
-    	
     }
 })
 forever(function () {
@@ -505,8 +534,170 @@ forever(function () {
     statusbar2.positionDirection(CollisionDirection.Left)
 })
 forever(function () {
+    if (controller.B.isPressed() && statusbar2.value >= 30) {
+        statusbar2.value += -30
+        animation.stopAnimation(animation.AnimationTypes.All, mySprite)
+        animation.runImageAnimation(
+        mySprite,
+        [img`
+            ........................
+            ........................
+            ...........cc...........
+            ...........cccc.........
+            .......cc...ccccccc.....
+            .......cccccc999999cc...
+            ........ccb9999999999c..
+            .....cc..b999999999999c.
+            .....cccb999999ff199999c
+            .....ccb99999999ff99d99c
+            ......b9999999999999999c
+            ...c..b999d99999bb13bbc.
+            ...cccd99ddddd99bb3339c.
+            ....cbdddddddddd99b339c.
+            ..cccdddddb99bdddd9999c.
+            ..cccdddddb999bbbbcccc..
+            ...ccddddddb9999cbcdc...
+            ccccbdddddddcb99cbcc....
+            cddddddddd99dbccbbc.....
+            cbdddddddd999dbbbcc.....
+            .ccbdddbbdd999bbcdbcc...
+            ...cccbbbbdd99ccdddbc...
+            ......cccbdddbccccccc...
+            ........cdd999dc........
+            `,img`
+            ........................
+            ........................
+            ...........ccc..........
+            ...........cccc.........
+            .......ccc..ccccccc.....
+            .......cccccc999999cc...
+            ........ccb9999999999c..
+            .....cc..b999999999999c.
+            .....cccb999999ff199999c
+            ......cb99999999ff99d99c
+            ......b9999999999999999c
+            ...cc.b999dd9999bb13bbc.
+            ...cccd99ddddd999b3339c.
+            .....bdddddddddd99b339c.
+            ..cccdddddb99bbddd9999c.
+            ..cccdddddb999bbbbcccc..
+            ...ccddddddb9999cbcdc...
+            ccccbdddddd9cb99cbcc....
+            cddddddddd9999ccbbc.....
+            .cddddddbdd999bbbcc.....
+            ..ccdddbbbdd99cbcdc.....
+            ....ccbbcbddddccdddcc...
+            ......cccdd999dcccccc...
+            ........cccccccc........
+            `,img`
+            ........................
+            ............cc..........
+            ............ccc.........
+            ........ccc.ccccccc.....
+            ........ccccc999999cc...
+            ........ccb9999999999c..
+            .....ccc.b99999ff19999c.
+            .....cccb9999999ff99999c
+            ......cb999999999999d99c
+            ....c.b999999999bb99999c
+            ....ccb999ddd9999b13bbc.
+            ....ccd99ddddd999b3339c.
+            .....cdd9ddddddd99b339c.
+            ...c.bddddb999bbbd999c..
+            ...ccdddddbb99999bccc...
+            ...ccdddddddcc999bcc....
+            ...ccddddddddbcccbcccc..
+            .ccbddddddd99dbbbbc99c..
+            ccddddddddd999dbbcc9c...
+            cddddddbbbdd999bbccc....
+            .ccddddbbbbdd99bcc......
+            ...cccbbbbbdddbcddcc....
+            .....cccccdd999dcccc....
+            ..........cccccc........
+            `,img`
+            ........................
+            ............cc..........
+            ............ccc.........
+            ........ccc.ccccccc.....
+            ........ccccc999999cc...
+            ........ccb9999999999c..
+            .....ccc.b99999ff19999c.
+            .....cccb9999999ff99999c
+            ......cb999999999999d99c
+            ....c.b999999999bb99999c
+            ....ccb999ddd9999b13bbc.
+            ....ccd99ddddd999b3339c.
+            .....cdd9ddddddd99b339c.
+            ...c.bddddb999bbbd999c..
+            ...ccdddddbb99999bccc...
+            ...ccdddddddcc999bcc....
+            .ccccdddddddddcccbcccc..
+            .cdcdddddddd99dbbbc99c..
+            .cdddddddddd999dccc9c...
+            .cbddddbbbbdd9d999cc....
+            ..cbdddbbbbbdd9999......
+            ...cccbbbbbbd9999c......
+            .....cccccccc999c.......
+            .............ccc........
+            `,img`
+            ........................
+            ............cc..........
+            ............ccc.........
+            ........ccc.ccccccc.....
+            ........ccccc999999cc...
+            ........ccb9999999999c..
+            .....ccc.b99999ff19999c.
+            .....cccb9999999ff99999c
+            ......cb999999999999d99c
+            ....c.b999999999bb99999c
+            ....ccb999ddd9999b13bbc.
+            ....ccd99ddddd999b3339c.
+            .....cdd9ddddddd99b339c.
+            ...c.bddddb999bbbd999c..
+            ...ccdddddb999999bccc...
+            ..cccddddddcc9999bcc....
+            .cdccddddddddbcccbcccc..
+            .cddbdddddddddbbbbc99c..
+            .cdddddddddd99dbbbc9c...
+            .cbddddbbbbd99ddbccc....
+            ..cbdddbbbbd999dccc.....
+            ...cccbbbbbbddd999c.....
+            .....ccccccbd99999c.....
+            ...........cc9999c......
+            `,img`
+            ........................
+            ............cc..........
+            ............ccc.........
+            ........cc..ccccccc.....
+            ........ccccc999999cc...
+            ........ccb9999999999c..
+            .....cc..b999999999999c.
+            .....cccb999999ff199999c
+            ......cb99999999ff99d99c
+            ......b9999999999999999c
+            ...cc.b999dd9999bb13bbc.
+            ...cccd99ddddd999b3339c.
+            ....ccdd9ddddddd99b339c.
+            .....bddddb99bdddd9999c.
+            ..cccdddddb99bbbbbcccc..
+            .ccccddddddb9999cbcccc..
+            .cdccdddddddc999cbc99c..
+            .cdddddddddddcccbbc9c...
+            .cbddddddd99dbbbbccc....
+            .ccbdddddd999dbbbcbc....
+            ..cccddbbbd999bbccc.....
+            ....ccbbbbbd999cc.......
+            ......ccccbddddbc.......
+            ..........cd9999dc......
+            `],
+        50,
+        true
+        )
+        shield_Up = 1
+    }
+})
+forever(function () {
     controller.moveSprite(mySprite, 45 - 2 * statusbar.value + Speed_boost, 350 - 45 * statusbar.value + Speed_boost)
-    controller.moveSprite(mySprite4, 45 - 2 * statusbar.value + Speed_boost, 350 - 45 * statusbar.value + Speed_boost)
 })
 forever(function () {
     if (controller.A.isPressed() && statusbar2.value >= 15 && statusbar.value < 10) {
@@ -517,45 +708,31 @@ forever(function () {
     }
 })
 forever(function () {
-    if (controller.B.isPressed() && statusbar2.value >= 30) {
-        statusbar2.value += -60
-        mySprite4 = sprites.create(img`
-            ..........99999999999...........
-            ........998888888888899.........
-            ......9988...........8899.......
-            .....988...............889......
-            ....98...................89.....
-            ...98.....................89....
-            ..98.......................89...
-            ..98.......................89...
-            .98.........................89..
-            .98.........................89..
-            98...........................89.
-            98...........................89.
-            98...........................89.
-            98...........................89.
-            98...........................89.
-            98...........................89.
-            98...........................89.
-            98...........................89.
-            98...........................89.
-            98...........................89.
-            98...........................89.
-            .98.........................89..
-            .98.........................89..
-            ..98.......................89...
-            ..98.......................89...
-            ...98.....................89....
-            ....98...................89.....
-            .....988...............889......
-            ......9988...........8899.......
-            ........998888888888899.........
-            ..........99999999999...........
-            ................................
-            `, SpriteKind.shield)
-        mySprite4.setPosition(mySprite.x, mySprite.y)
-        mySprite4.setStayInScreen(true)
-        pause(20000)
-        mySprite4.destroy()
+    if (shield_Up == 1) {
+        statusbar3.attachToSprite(mySprite)
+        statusbar3.setColor(9, 2)
+        statusbar3.max = 40
+        statusbar3.value = 40
+        statusbar3.positionDirection(CollisionDirection.Bottom)
+        for (let index = 0; index < 30; index++) {
+            pause(1000)
+            statusbar3.value += -1
+        }
     }
+})
+forever(function () {
+    if (statusbar3.value == 0) {
+        statusbar3.attachToSprite(mySprite5)
+        shield_Up = 0
+        animation.runImageAnimation(
+        mySprite,
+        assets.animation`myAnim`,
+        50,
+        true
+        )
+        pause(5000)
+    }
+})
+forever(function () {
+	
 })
