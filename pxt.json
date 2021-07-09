@@ -1,0 +1,33 @@
+{
+    "name": "Dino hoard",
+    "description": "",
+    "dependencies": {
+        "device": "*",
+        "arcade-background-scroll": "github:microsoft/arcade-background-scroll#ef27275c570030c09dd1b9e0db2f63a8844b0848",
+        "pxt-status-bar": "github:jwunderl/pxt-status-bar#v0.4.1",
+        "radio": "*",
+        "color": "*",
+        "palette": "*",
+        "keyboard": "*",
+        "pxt-button-combos": "github:jwunderl/pxt-button-combos#v0.0.24"
+    },
+    "files": [
+        "main.blocks",
+        "main.ts",
+        "README.md",
+        "assets.json",
+        "images.g.jres",
+        "images.g.ts"
+    ],
+    "testFiles": [
+        "test.ts"
+    ],
+    "targetVersions": {
+        "target": "1.4.45",
+        "targetId": "arcade"
+    },
+    "supportedTargets": [
+        "arcade"
+    ],
+    "preferredEditor": "blocksprj"
+}
