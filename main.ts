@@ -10,7 +10,7 @@ function charge_sound () {
     music.beamUp.play()
 }
 sprites.onOverlap(SpriteKind.Enemy, SpriteKind.shield, function (sprite, otherSprite) {
-    projectile2.destroy()
+    projectile2.destroy(effects.starField, 10)
 })
 info.onCountdownEnd(function () {
     if (info.score() >= 1) {
@@ -73,7 +73,7 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSp
     statusbar.value += -1
     mySprite.startEffect(effects.spray, 200)
 })
-let mySprite3: Sprite = null
+let mySprite4: Sprite = null
 let mySprite2: Sprite = null
 let projectile: Sprite = null
 let Speed_boost = 0
@@ -81,6 +81,7 @@ let statusbar: StatusBarSprite = null
 let statusbar2: StatusBarSprite = null
 let projectile2: Sprite = null
 let mySprite: Sprite = null
+music.setVolume(134)
 music.knock.play()
 let Projectile_speed = 3000
 createDino()
@@ -505,7 +506,7 @@ forever(function () {
 })
 forever(function () {
     controller.moveSprite(mySprite, 45 - 2 * statusbar.value + Speed_boost, 350 - 45 * statusbar.value + Speed_boost)
-    controller.moveSprite(mySprite3, 45 - 2 * statusbar.value + Speed_boost, 350 - 45 * statusbar.value + Speed_boost)
+    controller.moveSprite(mySprite4, 45 - 2 * statusbar.value + Speed_boost, 350 - 45 * statusbar.value + Speed_boost)
 })
 forever(function () {
     if (controller.A.isPressed() && statusbar2.value >= 15 && statusbar.value < 10) {
@@ -514,37 +515,47 @@ forever(function () {
         music.powerUp.play()
         pause(2000)
     }
+})
+forever(function () {
     if (controller.B.isPressed() && statusbar2.value >= 30) {
-        statusbar2.value += -30
-        mySprite3 = sprites.create(img`
-            ....88a99.......
-            .......899......
-            ........889.....
-            .........a99....
-            ..........899...
-            ...........a89..
-            ............a89.
-            .............899
-            .............889
-            ..............89
-            ..............89
-            .............a89
-            ..............89
-            ..............89
-            .............889
-            .............899
-            ...........a899.
-            ..........899...
-            .........a99....
-            ........899.....
-            ........89......
-            ......899.......
-            .....a99........
-            ..88a89.........
+        statusbar2.value += -60
+        mySprite4 = sprites.create(img`
+            ..........99999999999...........
+            ........998888888888899.........
+            ......9988...........8899.......
+            .....988...............889......
+            ....98...................89.....
+            ...98.....................89....
+            ..98.......................89...
+            ..98.......................89...
+            .98.........................89..
+            .98.........................89..
+            98...........................89.
+            98...........................89.
+            98...........................89.
+            98...........................89.
+            98...........................89.
+            98...........................89.
+            98...........................89.
+            98...........................89.
+            98...........................89.
+            98...........................89.
+            98...........................89.
+            .98.........................89..
+            .98.........................89..
+            ..98.......................89...
+            ..98.......................89...
+            ...98.....................89....
+            ....98...................89.....
+            .....988...............889......
+            ......9988...........8899.......
+            ........998888888888899.........
+            ..........99999999999...........
+            ................................
             `, SpriteKind.shield)
-        mySprite3.setPosition(mySprite.x + 20, mySprite.y)
-        mySprite3.setStayInScreen(true)
+        mySprite4.setPosition(mySprite.x, mySprite.y)
+        mySprite4.setStayInScreen(true)
         pause(20000)
-        mySprite3.destroy()
+        mySprite4.destroy()
     }
 })
