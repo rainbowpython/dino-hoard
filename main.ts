@@ -5,9 +5,6 @@ namespace SpriteKind {
 namespace StatusBarKind {
     export const shieldCooldown = StatusBarKind.create()
 }
-controller.combos.attachCombo("" + controller.combos.idToString(controller.combos.ID.up) + controller.combos.idToString(controller.combos.ID.up) + controller.combos.idToString(controller.combos.ID.down) + controller.combos.idToString(controller.combos.ID.left) + controller.combos.idToString(controller.combos.ID.left) + controller.combos.idToString(controller.combos.ID.left) + controller.combos.idToString(controller.combos.ID.right), function () {
-	
-})
 function charge_sound () {
     music.sonar.play()
     music.beamUp.play()
@@ -430,7 +427,6 @@ forever(function () {
 forever(function () {
     if (info.score() >= 100) {
         for (let index = 0; index < 4; index++) {
-            charge_sound()
             mySprite2 = sprites.create(img`
                 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 
                 `, SpriteKind.LaserPointer)
@@ -451,8 +447,8 @@ forever(function () {
             )
             pause(400 - info.score())
             mySprite2.destroy()
-            music.buzzer.play()
             music.pewPew.play()
+            music.buzzer.play()
             music.zapped.play()
             projectile2 = sprites.createProjectileFromSide(img`
                 . . . . . . . . . . . . . . . . 
